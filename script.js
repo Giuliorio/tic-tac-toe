@@ -5,7 +5,7 @@ const Gameboard = (function() {
         [null, null, null]
     ];
 
-    const getGameState = () => gameboard;
+    const getGameState = () => structuredClone(gameboard);
     const takeAction = (mark, row, column) => {
         gameboard[row].splice(column, 1, mark);
     };
@@ -20,11 +20,11 @@ const GameController = (function(
     const players = [
         {
             name: playerOneName,
-            piece: 'X'
+            mark: 'X'
         },
         {
             name: playerTwoName,
-            piece: 'O'
+            mark: 'O'
         }
     ];
 
@@ -35,10 +35,39 @@ const GameController = (function(
 
     const getActivePlayer = () => activePlayer;
 
+    const evaluateVictory = (board, mark) => {
+        // Evaluate Rows
+        for (let i = 0; i < 3; i++) {
+            if (board[i][0] === mark && board[i][1] === mark && board[i][2] === mark ) {
+                return true;
+            }
+        }
+        // Evaluate Columns
+        for (let i = 0; i < 3; i++) {
+            if (board[0][i] === mark && board[1][i] === mark && board[2][i] === mark ) {
+                return true;
+            }
+        }
+        // Evaluate Diagonals
+        if ((board[0][0] === mark && board[1][1] === mark && board[2][2] === mark) ||
+            (board[0][2] === mark && board[1][1] === mark && board[2][0] === mark)) {
+                return true;
+            }
+    }
+
+    const verifyOutcome = (board) => {
+        if (evaluateVictory(board, getActivePlayer().mark)) {
+            console.log(`${getActivePlayer().name} won!`)
+            return
+        }
+    }
+
     const playRound = (row, column) => {
         Gameboard.takeAction(getActivePlayer().mark, row, column);
-        switchPlayerTurn();
         console.log(Gameboard.getGameState())
+        verifyOutcome(Gameboard.getGameState())
+
+        switchPlayerTurn();
     };
 
     return { getActivePlayer, playRound };
