@@ -28,10 +28,15 @@ const GameController = (function(
         }
     ];
 
+    let round = 0;
+
     let activePlayer = players[0];
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players [0];
     };
+
+    const getRound = () => round;
+    const incrementRound = () => round++;
 
     const getActivePlayer = () => activePlayer;
 
@@ -60,6 +65,10 @@ const GameController = (function(
             console.log(`${getActivePlayer().name} won!`)
             return
         }
+
+        if (getRound() === 9) {
+            console.log("It's a tie!")
+        }
     }
 
     const playRound = (row, column) => {
@@ -68,7 +77,8 @@ const GameController = (function(
         verifyOutcome(Gameboard.getGameState())
 
         switchPlayerTurn();
+        incrementRound()
     };
 
-    return { getActivePlayer, playRound };
+    return { getActivePlayer, playRound, incrementRound, getRound};
 })()
