@@ -1,16 +1,33 @@
 const Gameboard = (function() {
-    const gameboard = [
-        [null, null, null], 
-        [null, null, null], 
-        [null, null, null]
-    ];
+    const gameboard = [];
 
-    const getGameState = () => structuredClone(gameboard);
+    const setGameboard = () => {
+        for (let i = 0; i < 3; i++) {
+            const row = [];
+            for (let j = 0; j < 3; j++) {
+                row.push(Cell());
+            }
+            gameboard.push(row);
+        }
+    }
+    const getGameboard = () => gameboard.map(row => row.map(cell => cell.getValue()));
     const takeAction = (mark, row, column) => {
-        gameboard[row].splice(column, 1, mark);
+        gameboard[row][column].addMark(mark);
     };
-    return { getGameState, takeAction };
+
+    setGameboard()
+
+    return { getGameboard, takeAction };
 })();
+
+function Cell() {
+    let value = null;
+
+    const addMark = (mark) => {value = mark};
+    const getValue = () => value
+
+    return {  addMark, getValue }
+}
 
 const GameController = (function(
     playerOneName = 'Player One',
@@ -73,8 +90,8 @@ const GameController = (function(
 
     const playRound = (row, column) => {
         Gameboard.takeAction(getActivePlayer().mark, row, column);
-        console.log(Gameboard.getGameState())
-        verifyOutcome(Gameboard.getGameState())
+        console.log(Gameboard.getGameboard())
+        verifyOutcome(Gameboard.getGameboard())
 
         switchPlayerTurn();
         incrementRound()
