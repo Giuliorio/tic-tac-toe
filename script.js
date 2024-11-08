@@ -10,6 +10,9 @@ const Gameboard = (function() {
             gameboard.push(row);
         }
     }
+    const resetGameboard = () => {
+        gameboard.forEach((row, i) => gameboard[i] = row.map(cell => cell = Cell()))
+    }
     const getGameboard = () => gameboard.map(row => row.map(cell => cell.getValue()));
     const takeAction = (mark, row, column) => {
         gameboard[row][column].addMark(mark);
@@ -17,7 +20,7 @@ const Gameboard = (function() {
 
     setGameboard()
 
-    return { getGameboard, takeAction };
+    return { getGameboard, takeAction, resetGameboard };
 })();
 
 function Cell() {
